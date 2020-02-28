@@ -22,7 +22,7 @@ def create_rotating_log(path):
     logger.setLevel(logging.DEBUG)
 
     # add a rotating handler
-    handler = RotatingFileHandler(path, maxBytes=1000*1024, backupCount=5, mode='a') # let max size be 1 Mb
+    handler = RotatingFileHandler(path, maxBytes=1000*1024, backupCount=10, mode='a') # let max size be 1 Mb
     handler.setFormatter(logging.Formatter('%(asctime)s %(message)s', datefmt='%m-%d-%Y %H:%M:%S'))
     logger.addHandler(handler)
 
@@ -85,7 +85,7 @@ def main() :
     print(("Starting service in loop..."))
     GPIO.setmode(GPIO.BCM)
     for p in pin_info.values() :
-        logger.debug("Initializing pin [%s,\tIN,\tGPIO_PUD_UP]" % p)
+        logger.debug("Initializing pin [%s,\tIN,\tGPIO_PUD_UP,\tvideo=%s]" % (p, video_path(p) ))
         GPIO.setup(p, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     loop()
 
