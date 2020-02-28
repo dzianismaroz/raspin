@@ -6,12 +6,27 @@ import logging
 import time
 import RPi.GPIO as GPIO
 from subprocess import Popen
+from logging.handlers import RotatingFileHandler
 
-logging.basicConfig( filename='pi-test.log' \
-                    , filemode='w' \
-                    , level=logging.DEBUG \
-                    , format='%(asctime)s %(message)s' \
-                    , datefmt='%m-%d-%Y %H:%M:%S' )
+logger = logging.getLogger("Rotating Log")
+
+#------------ CREATE LOG ROTATION CONFIG -----------------------
+def create_rotating_log(path):
+    """
+    Creates a rotating log
+    """
+
+    if not os.path.exists("logs/"):
+        os.makedirs("logs/")
+
+    logger.setLevel(logging.DEBUG)
+
+    # add a rotating handler
+    handler = RotatingFileHandler(path, maxBytes=1000*1024, backupCount=5, mode='a') # let max size be 1 Mb
+    handler.setFormatter(logging.Formatter('%(asctime)s %(message)s', datefmt='%m-%d-%Y %H:%M:%S'))
+    logger.addHandler(handler)
+
+create_rotating_log("logs/pi-test.log")
 
 R = re.compile("\d+")
 
@@ -19,10 +34,10 @@ pin_info = {}
 
 def read_base_path_config(file_name) :
     try:
-        logging.debug("Opening configuration file [%s] ..." % file_name)
+        logger.debug("Opening configuration file [%s] ..." % file_name)
         return open(file_name.rstrip()).read()
     except:
-        logging.error("Failed to read config file %s [ due to: %s" % (file_name, sys.exc_info()[0]))
+        logger.error("Failed to read config file %s [ due to: %s" % (file_name, sys.exc_info()[0]))
         print("Error while reading config file: %s" % sys.exc_info()[0])
         sys.exit(-1)
 
@@ -47,7 +62,7 @@ def video_path(pin) :
 def loop() :
     while True:
         print("Running main loop")
-        logging.debug("Running main loop")
+        logger.debug("Running main loop")
         time.sleep(0.2)
         for pin in pin_info.values() :
             readVal = GPIO.input(pin)
@@ -61,16 +76,16 @@ def main() :
     performs all intialializations and running main loop
     :return: nothing
     """
-    logging.info("starting pi-test....")
+    logger.info("starting pi-test....")
     print("starting pi-test....")
     for p in show_pins() :
         pin_info.update({"%s" % p :  int(p)})
-    logging.info("pins are configured: %s" % pin_info.values())
+    logger.info("pins are configured: %s" % pin_info.values())
     print("pins are configured: %s" % pin_info.values())
     print(("Starting service in loop..."))
     GPIO.setmode(GPIO.BCM)
     for p in pin_info.values() :
-        logging.debug("Initializing pin [%s,\tIN,\tGPIO_PUD_UP]" % p)
+        logger.debug("Initializing pin [%s,\tIN,\tGPIO_PUD_UP]" % p)
         GPIO.setup(p, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     loop()
 
