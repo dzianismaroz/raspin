@@ -15,8 +15,8 @@
 
 SERVICE_=/etc/systemd/system/raspin.service
 EXEC_=$(pwd -P)
+sudo rm -f ./raspin.sh > /dev/null
 sudo touch ./raspin.sh
-sudo echo  > ./raspin.sh
 sudo echo "#!/bin/bash" >> ./raspin.sh
 sudo echo "cd $EXEC_" >> ./raspin.sh
 sudo echo "python $EXEC_/pi-test.py" >>  raspin.sh
