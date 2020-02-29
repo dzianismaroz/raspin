@@ -1,0 +1,43 @@
+#!/bin/bash
+# Installation of Raspin
+# Folders scrutcture:
+# ..
+# |-conf   - configuration directory
+# |  |- base_path    - file to define where all videos linked to pins are persisted
+# |  |- reset        - file, specifies a pin wich resets current video
+# |- logs            - directory with log files, automatically created
+# |-scheme           - default directory with pins / video mapping
+# |  |-17            - pin #17 will be monitored
+# |     |-1.mts      - exact this video ill be played back on pin 17 trigger
+# |-raspin.sh        - bash-wrapper to run script
+# |-test.py          - main python executable
+# |-install          - installation script to install as system service
+
+SERVICE_=/etc/systemd/system/raspin.service
+EXEC_=$(pwd -P)
+sudo touch ./raspin.sh
+sudo echo  > ./raspin.sh
+sudo echo "#!/bin/bash" >> ./raspin.sh
+sudo echo "cd $EXEC_" >> ./raspin.sh
+sudo echo "python $EXEC_/test.py" >>  raspin.sh
+sudo touch $SERVICE_
+sudo echo "[Unit]" >> $SERVICE_
+sudo echo "Description=Raspin service" >> $SERVICE_
+sudo echo "After=x11-common.service" >> $SERVICE_
+sudo echo "StartLimitIntervalSec=0" >> $SERVICE_
+sudo echo -n "" >> $SERVICE_
+sudo echo "[Service]" >> $SERVICE_
+sudo echo "Type=simple" >> $SERVICE_
+sudo echo "Restart=always" >> $SERVICE_
+sudo echo "RestartSec=1" >> $SERVICE_
+sudo echo "User=pi" >> $SERVICE_
+sudo chmod a+x ./raspin.sh
+
+sudo echo "ExecStart=$EXEC_/raspin.sh" >> $SERVICE_
+sudo echo -n"" >> $SERVICE_
+sudo echo "[Install]" >> $SERVICE_
+sudo echo "WantedBy=default.target" >> $SERVICE_
+
+
+sudo systemctl start raspin
+sudo systemctl enable raspin
