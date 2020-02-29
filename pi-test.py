@@ -34,7 +34,7 @@ create_rotating_log("logs/pi-test.log")
 R = re.compile('\d+')
 
 pin_info = {}
-
+current_play=[]
 
 def log_exit():
     LOGGER.error("###### ERROR raspin service being terminated")
@@ -74,9 +74,11 @@ def extract_reset_pin():
 def play_video(pin):
     stop_video()
     video = video_path(pin)
-    LOGGER.info("starting playback y pin = %s -> video = %s" % (pin,video))
     try:
+        current_play.append(1)
         Popen(['omxplayer', '-b', '-o', 'hdmi', video, ' > /dev/null']).wait()
+        LOGGER.info("Pin %s triggered" % pin)
+        LOGGER.info("starting playback y pin = %s -> video = %s" % (pin, video))
     except Exception:
         LOGGER.error("##### ERROR while playback of video due to : %s" % sys.exc_info()[0])
         pass
@@ -85,6 +87,7 @@ def play_video(pin):
 
 def loop_video():
     stop_video()
+    current_play[:]=[]
     try:
         Popen(['omxplayer', '-b', '-o', 'hdmi', '--loop', video_path('default'), ' > dev/null'])
     except Exception:
@@ -117,22 +120,21 @@ def is_pin_triggered(val):
 def loop():
     loop_video()
     while True:
-        time.sleep(0.1)
+        time.sleep(0.2)
         for pin in pin_info.values():
             read_val_pin = GPIO.input(pin)
             if is_pin_triggered(read_val_pin):
-                LOGGER.info("Pin %s triggered" % pin)
                 play_video(pin)
 
 
 def reset_monitor():
     reset_pin = int(extract_reset_pin())
     while True:
-        time.sleep(0.1)
+        time.sleep(0.2)
         read_val = GPIO.input(reset_pin)
-        if is_pin_triggered(read_val):
-            LOGGER.info("RESETTING ALL VIDEOS")
+        if is_pin_triggered(read_val) and current_play:
             loop_video()
+            LOGGER.info("RESETTING ALL VIDEOS")
 
 
 def main():
