@@ -7,6 +7,7 @@
 # |  |- reset        - file, specifies a pin wich resets current video
 # |- logs            - directory with log files, automatically created
 # |-scheme           - default directory with pins / video mapping
+# |  |-default       - default background video
 # |  |-17            - pin #17 will be monitored
 # |     |-1.mts      - exact this video ill be played back on pin 17 trigger
 # |-raspin.sh        - bash-wrapper to run script
@@ -15,7 +16,18 @@
 
 SERVICE_=/etc/systemd/system/raspin.service
 EXEC_=$(pwd -P)
+
+sudo mkdir -p ./scheme
+sudo mkdir -p ./scheme/default
+sudo mkdir -p ./conf
+sudo rm -f ./conf/base_path > /dev/null
+sudo rm -f ./conf/reset > /dev/null
+sudo touch ./conf/base_path
+sudo touch ./conf/reset
+sudo echo "$EXEC_/scheme" > ./conf/base_path
+sudo echo "5" > ./conf/reset
 sudo rm -f ./raspin.sh > /dev/null
+
 sudo touch ./raspin.sh
 sudo echo "#!/bin/bash" >> ./raspin.sh
 sudo echo "cd $EXEC_" >> ./raspin.sh
