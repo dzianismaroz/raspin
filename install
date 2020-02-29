@@ -10,7 +10,7 @@
 # |  |-17            - pin #17 will be monitored
 # |     |-1.mts      - exact this video ill be played back on pin 17 trigger
 # |-raspin.sh        - bash-wrapper to run script
-# |-test.py          - main python executable
+# |-pi-test.py          - main python executable
 # |-install          - installation script to install as system service
 
 SERVICE_=/etc/systemd/system/raspin.service
@@ -19,7 +19,7 @@ sudo touch ./raspin.sh
 sudo echo  > ./raspin.sh
 sudo echo "#!/bin/bash" >> ./raspin.sh
 sudo echo "cd $EXEC_" >> ./raspin.sh
-sudo echo "python $EXEC_/test.py" >>  raspin.sh
+sudo echo "python $EXEC_/pi-test.py" >>  raspin.sh
 sudo touch $SERVICE_
 sudo echo "[Unit]" >> $SERVICE_
 sudo echo "Description=Raspin service" >> $SERVICE_
