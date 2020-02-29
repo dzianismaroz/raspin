@@ -12,7 +12,6 @@ from logging.handlers import RotatingFileHandler
 LOGGER = logging.getLogger("Rotating Log")
 
 
-#------------ CREATE LOG ROTATION CONFIG -----------------------
 def create_rotating_log(path):
     """
     Creates a rotating log
@@ -34,7 +33,8 @@ create_rotating_log("logs/pi-test.log")
 R = re.compile('\d+')
 
 pin_info = {}
-current_play=[]
+current_play = []
+
 
 def log_exit():
     LOGGER.error("###### ERROR raspin service being terminated")
@@ -68,7 +68,9 @@ def show_pins():
 
 
 def extract_reset_pin():
-    return read_base_path_config('conf/reset').strip()
+    val = read_base_path_config('conf/reset').strip()
+    del pin_info[val]
+    return val
 
 
 def play_video(pin):
