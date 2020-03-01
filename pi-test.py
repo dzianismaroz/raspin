@@ -69,7 +69,9 @@ def show_pins():
 
 def extract_reset_pin():
     val = read_base_path_config('conf/reset').strip()
-    del pin_info[val]
+    for key in pin_info.keys():
+        if val == key:
+            del pin_info[key]
     return val
 
 
