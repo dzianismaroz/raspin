@@ -11,5 +11,7 @@ installation procedure
 * run sudo ./install
 * navigate to subfolder ./scheme
 * create subfolders with name matching pin (17 , 27,  22 , etc) and video file inside 
+* after folders with pin names created : 17, 27, ....
+  and video files by each pin folder inside -> run sudo systtemctl restart raspin
     
 
