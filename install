@@ -14,6 +14,7 @@
 # |-pi-test.py          - main python executable
 # |-install          - installation script to install as system service
 
+
 SERVICE_=/etc/systemd/system/raspin.service
 EXEC_=$(pwd -P)
 
@@ -50,6 +51,9 @@ sudo echo -n"" >> $SERVICE_
 sudo echo "[Install]" >> $SERVICE_
 sudo echo "WantedBy=default.target" >> $SERVICE_
 
+sudo chown pi:pi $EXEC_/*
+sudo chown pi:pi $EXEC_/conf/*
+sudo chown pi:pi $EXEC_/scheme/*
 
 sudo systemctl start raspin
 sudo systemctl enable raspin
